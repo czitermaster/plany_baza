@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  sybase:
+    image: jaschweder/sybase:latest
+    restart: always
+    ports:
+      - "2638:2638"
+    container_name: sybase
+    environment:
+      - SYBASE_USER=sa
+      - SYBASE_PASSWORD=secret123
+      - SYBASE_DB=mydb
+  database:
+    image: mysql:9
+    restart: always
+    container_name: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret123
+      MYSQL_DATABASE: mydb
+    volumes:
+      - ./database:/var/lib/mysql
+
+volumes:
+  database:
