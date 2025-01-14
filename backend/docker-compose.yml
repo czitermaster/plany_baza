@@ -1,27 +1,17 @@
 version: "3"
 
 services:
-  sybase:
-    image: jaschweder/sybase:latest
-    restart: always
-    ports:
-      - "2638:2638"
-    container_name: sybase
-    environment:
-      - SYBASE_USER=sa
-      - SYBASE_PASSWORD=secret123
-      - SYBASE_DB=mydb
+  
   database:
-    image: mysql:9
-    restart: always
+    image: postgres:9
+    restart: unless-stopped
     container_name: db
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      MYSQL_ROOT_PASSWORD: secret123
-      MYSQL_DATABASE: mydb
+      POSTGRES_PASSWORD: secret123
+      POSTGRES_DB: mydb
+      POSTGRES_USER: kajtu
     volumes:
-      - ./database:/var/lib/mysql
+      - ./database:/var/lib/postgresql/data
 
-volumes:
-  database:
