@@ -35,3 +35,30 @@ export function deleteStudent(dbClient) {
     });
   };
 }
+
+export function updateStudent(dbClient) {
+  return async (req, res) => {
+    const { id } = req.params;
+    const { imie, nazwisko, pesel, telefon, rok_studiow, id_kierunek } =
+      req.body;
+    const query = `
+      UPDATE student
+      SET imie=$1, nazwisko=$2, pesel=$3, telefon=$4, rok_studiow=$5, id_kierunek=$6
+      WHERE id_student = $7
+      RETURNING *`;
+    const values = [
+      imie,
+      nazwisko,
+      pesel,
+      telefon,
+      rok_studiow,
+      id_kierunek,
+      id,
+    ];
+    const result = await dbClient.query(query, values);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
+    res.json(result.rows[0]);
+  };
+}

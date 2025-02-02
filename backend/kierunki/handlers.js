@@ -32,3 +32,20 @@ export function deleteKierunek(dbClient) {
     res.json({ id: id_kierunek });
   };
 }
+export function updateKierunek(dbClient) {
+  return async (req, res) => {
+    const { id } = req.params;
+    const { nazwa_kierunku, poziom_studiow } = req.body;
+    const query = `
+      UPDATE kierunek
+      SET nazwa_kierunku = $1, poziom_studiow = $2
+      WHERE id_kierunek = $3
+      RETURNING *`;
+    const values = [nazwa_kierunku, poziom_studiow, id];
+    const result = await dbClient.query(query, values);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
+    res.json(result.rows[0]);
+  };
+}

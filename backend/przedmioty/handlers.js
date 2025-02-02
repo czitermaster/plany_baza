@@ -33,3 +33,20 @@ export function deletePrzedmiot(dbClient) {
     });
   };
 }
+export function updatePrzedmioty(dbClient) {
+  return async (req, res) => {
+    const { id } = req.params;
+    const { nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia } = req.body;
+    const query = `
+      UPDATE przedmioty
+      SET nazwa_przedmiotu=$1, liczba_ects=$2, id_plany_ksztalcenia=$3 
+      WHERE id_przedmioty = $4
+      RETURNING *`;
+    const values = [nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia, id];
+    const result = await dbClient.query(query, values);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
+    res.json(result.rows[0]);
+  };
+}

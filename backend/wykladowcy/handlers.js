@@ -38,9 +38,13 @@ export function deleteWykladowca(dbClient) {
 export function joinWykladowcaToKierunek(dbClient) {
   return async (req, res) => {
     const query = `
-    INSERT INTO relationship_3 id_wykladowca (id_wykladowca, id_kierunek) VALUES ($1, $2)`;
+    INSERT INTO relationship_3 (id_wykladowca, id_kierunek) VALUES ($1, $2)`;
     const id_wykladowca = Number(req.params.id);
     const { id_kierunek } = req.body;
+    const values = [id_wykladowca, id_kierunek];
+    await dbClient.query(query, values);
+
+    res.json({ id_wykladowca, id_kierunek });
   };
 }
 

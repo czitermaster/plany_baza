@@ -34,3 +34,21 @@ export function deletePlan(dbClient) {
     });
   };
 }
+
+export function updatePlan(dbClient) {
+  return async (req, res) => {
+    const { id } = req.params;
+    const { semestr, rok_akademicki, id_kierunek } = req.body;
+    const query = `
+      UPDATE plany_ksztalcenia
+      SET semestr = $1, rok_akademicki = $2, id_kierunek = $3
+      WHERE id_plany_ksztalcenia = $4
+      RETURNING *`;
+    const values = [semestr, rok_akademicki, id_kierunek, id];
+    const result = await dbClient.query(query, values);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
+    res.json(result.rows[0]);
+  };
+}
