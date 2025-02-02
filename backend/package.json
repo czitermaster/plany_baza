@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,6 +11,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.2",
+    "http-status-codes": "^2.3.0",
     "mysql2": "^3.12.0",
     "nodemon": "^3.1.9",
     "pg": "^8.13.1",

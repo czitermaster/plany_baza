@@ -1,9 +1,13 @@
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError } from "../utils.js";
+
 export function getWykladowcy(dbClient) {
   return async (req, res) => {
     const wykladowcy = await dbClient.query("SELECT * FROM wykladowcy");
     res.json(wykladowcy.rows);
   };
 }
+
 export function createWykladowca(dbClient) {
   return async (req, res) => {
     const query = `
@@ -12,18 +16,48 @@ export function createWykladowca(dbClient) {
     const { imie, nazwisko, telefon, email } = req.body;
     const values = [imie, nazwisko, telefon, email];
     const wykladowcy = await dbClient.query(query, values);
-    res.json(wykladowcy.rows[0]);
+    res.status(StatusCodes.CREATED).json(wykladowcy.rows[0]);
   };
 }
+
 export function deleteWykladowca(dbClient) {
   return async (req, res) => {
     const query = `
-  DELETE FROM wykladowcy WHERE id_wykladowca = $1`;
-    const id_wykladowca = req.params.id;
-    await dbClient.query(query, [id_wykladowca]);
+      DELETE FROM wykladowcy WHERE id_wykladowca = $1`;
+    const id_wykladowca = Number(req.params.id);
+    const result = await dbClient.query(query, [id_wykladowca]);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
     res.json({
-      message: "pomyślnie usunięto wygkładowce",
       id: id_wykladowca,
     });
+  };
+}
+
+export function joinWykladowcaToKierunek(dbClient) {
+  return async (req, res) => {
+    const query = `
+    INSERT INTO relationship_3 id_wykladowca (id_wykladowca, id_kierunek) VALUES ($1, $2)`;
+    const id_wykladowca = Number(req.params.id);
+    const { id_kierunek } = req.body;
+  };
+}
+
+export function updateWykladowca(dbClient) {
+  return async (req, res) => {
+    const { id } = req.params;
+    const { imie, nazwisko, telefon, email } = req.body;
+    const query = `
+      UPDATE wykladowcy
+      SET imie = $1, nazwisko = $2, telefon = $3, email = $4
+      WHERE id_wykladowca = $5
+      RETURNING *`;
+    const values = [imie, nazwisko, telefon, email, id];
+    const result = await dbClient.query(query, values);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
+    res.json(result.rows[0]);
   };
 }

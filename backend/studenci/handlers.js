@@ -1,3 +1,6 @@
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError } from "../utils.js";
+
 export function getStudenci(dbClient) {
   return async (req, res) => {
     const student = await dbClient.query("SELECT * FROM student");
@@ -14,7 +17,7 @@ export function createStudent(dbClient) {
       req.body;
     const values = [imie, nazwisko, pesel, telefon, rok_studiow, id_kierunek];
     const student = await dbClient.query(query, values);
-    res.status(201).json(student.rows[0]);
+    res.status(StatusCodes.CREATED).json(student.rows[0]);
   };
 }
 
@@ -22,10 +25,12 @@ export function deleteStudent(dbClient) {
   return async (req, res) => {
     const query = `
   DELETE FROM student WHERE  id_student = $1`;
-    const id_student = req.params.id;
-    await dbClient.query(query, [id_student]);
+    const id_student = Number(req.params.id);
+    const result = await dbClient.query(query, [id_student]);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
     res.json({
-      message: "pomyślnie usunięto studetna",
       id: id_student,
     });
   };

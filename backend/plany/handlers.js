@@ -1,3 +1,6 @@
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError } from "../utils.js";
+
 export function getPlany(dbClient) {
   return async (req, res) => {
     const plany = await dbClient.query("SELECT * FROM plany_ksztalcenia");
@@ -13,17 +16,20 @@ export function createPlan(dbClient) {
     const { semestr, rok_akademicki, id_kierunek } = req.body;
     const values = [semestr, rok_akademicki, id_kierunek];
     const plany = await dbClient.query(query, values);
-    res.status(201).json(plany.rows[0]);
+    res.status(StatusCodes.CREATED).json(plany.rows[0]);
   };
 }
+
 export function deletePlan(dbClient) {
   return async (req, res) => {
     const query = `
-    DELETE FROM plany_ksztalcenia WHERE id_plany = $1`;
-    const plany_ksztalcenia = req.params.id;
-    await dbClient.query(query, [plany_ksztalcenia]);
+    DELETE FROM plany_ksztalcenia WHERE id_plany_ksztalcenia = $1`;
+    const plany_ksztalcenia = Number(req.params.id);
+    const result = await dbClient.query(query, [plany_ksztalcenia]);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
     res.json({
-      message: "pomyślnie usunięto plan",
       id: plany_ksztalcenia,
     });
   };

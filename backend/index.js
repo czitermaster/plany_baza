@@ -30,7 +30,7 @@ async function main() {
   app.use("/przedmioty", przedmiotyRouter(client));
   app.use("/kierunki", kierunkiRouter(client));
 
-  app.use(() => {
+  app.use((_, res) => {
     res.status(404).json({ message: "Endpoint not found", code: 404 });
   });
 

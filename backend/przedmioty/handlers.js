@@ -1,3 +1,6 @@
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError } from "../utils.js";
+
 export function getPrzedmioty(dbClient) {
   return async (req, res) => {
     const przedmioty = await dbClient.query("SELECT * FROM przedmioty");
@@ -12,7 +15,7 @@ export function createPrzedmiot(dbClient) {
     const { nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia } = req.body;
     const values = [nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia];
     const przedmioty = await dbClient.query(query, values);
-    res.json(przedmioty.rows[0]);
+    res.status(StatusCodes.CREATED).json(przedmioty.rows[0]);
   };
 }
 
@@ -20,10 +23,12 @@ export function deletePrzedmiot(dbClient) {
   return async (req, res) => {
     const query = `
   DELETE FROM przedmioty WHERE  id_przedmioty = $1`;
-    const id_przedmioty = req.params.id;
-    await dbClient.query(query, [id_przedmioty]);
+    const id_przedmioty = Number(req.params.id);
+    const result = await dbClient.query(query, [id_przedmioty]);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
     res.json({
-      message: "pomyślnie usunięto przedmiot",
       id: id_przedmioty,
     });
   };
