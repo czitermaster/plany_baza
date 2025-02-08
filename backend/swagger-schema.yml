@@ -296,6 +296,64 @@ paths:
                     type: string
                     example: "Wystąpił błąd podczas aktualizacji studenta"
 
+  /studenci/{id}/dolacz-do-planu:
+    post:
+      summary: Dodaj studenta do planu
+      operationId: addStudentToPlans
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: ID studenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_plany_ksztalcenia:
+                  type: integer
+                  example: 6
+                  description: ID planów do których ma zostać dodany student
+              required:
+                - id_plany_ksztalcenia
+      responses:
+        '201':
+          description: Student został pomyślnie dodany do planów
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemoveResponse"
+        '400':
+          description: Błędne dane wejściowe lub brak parametrów
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Nieprawidłowe dane wejściowe"
+        '404':
+          description: Student lub plany nie zostały znalezione
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        '500':
+          description: Wewnętrzny błąd serwera
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Wystąpił błąd podczas dodawania studenta do planów"
+
   /plany:
     get:
       summary: Pobierz listę planów kształcenia

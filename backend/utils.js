@@ -10,11 +10,9 @@ export function handler(func) {
   };
 }
 
-export class NotFoundError extends Error {
-  code = StatusCodes.NOT_FOUND;
-
-  constructor() {
-    super("Not Found");
+class ApplicationError extends Error {
+  constructor(message) {
+    super(message);
   }
 
   respond() {
@@ -25,10 +23,26 @@ export class NotFoundError extends Error {
   }
 }
 
+export class NotFoundError extends ApplicationError {
+  code = StatusCodes.NOT_FOUND;
+
+  constructor(message) {
+    super(message || "Not Found");
+  }
+}
+
+export class BadRequestError extends ApplicationError {
+  code = StatusCodes.BAD_REQUEST;
+
+  constructor(message) {
+    super(message || "Bad Request");
+  }
+}
+
 export function errorHanlder(err, req, res, next) {
   console.log(`[ERROR]: ${err.message}`);
   console.log(err.stack);
-  if (err instanceof NotFoundError) {
+  if (err instanceof ApplicationError) {
     return res.status(err.code).json(err.respond());
   }
   res

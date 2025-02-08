@@ -1,5 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { NotFoundError } from "../utils.js";
+import { PostgresError } from "pg-error-enum";
+import pg from "pg";
+import { BadRequestError, NotFoundError } from "../utils.js";
 
 export function getWykladowcy(dbClient) {
   return async (req, res) => {
@@ -42,9 +44,34 @@ export function joinWykladowcaToKierunek(dbClient) {
     const id_wykladowca = Number(req.params.id);
     const { id_kierunek } = req.body;
     const values = [id_wykladowca, id_kierunek];
-    await dbClient.query(query, values);
+    try {
+      await dbClient.query(query, values);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.UNIQUE_VIOLATION
+      ) {
+        throw new BadRequestError("This relationship already exist");
+      }
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION &&
+        e.constraint === "fk_relation_relations_wykladow"
+      ) {
+        throw new NotFoundError("This teacher was not found");
+      }
 
-    res.json({ id_wykladowca, id_kierunek });
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION &&
+        e.constraint === "fk_relation_relations_kierunek"
+      ) {
+        throw new BadRequestError("This course was not found");
+      }
+      throw e;
+    }
+
+    res.status(StatusCodes.CREATED).json({ id_wykladowca, id_kierunek });
   };
 }
 

@@ -1,5 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { NotFoundError } from "../utils.js";
+import { PostgresError } from "pg-error-enum";
+import pg from "pg";
+import { BadRequestError, NotFoundError } from "../utils.js";
 
 export function getStudenci(dbClient) {
   return async (req, res) => {
@@ -60,5 +62,43 @@ export function updateStudent(dbClient) {
       throw new NotFoundError();
     }
     res.json(result.rows[0]);
+  };
+}
+
+export function joinStudentToPlany(dbClient) {
+  return async (req, res) => {
+    const query = `
+    INSERT INTO relationship_2 (id_student, id_plany_ksztalcenia) VALUES ($1, $2)`;
+    const id_student = Number(req.params.id);
+    const { id_plany_ksztalcenia } = req.body;
+    const values = [id_student, id_plany_ksztalcenia];
+    try {
+      await dbClient.query(query, values);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.UNIQUE_VIOLATION
+      ) {
+        throw new BadRequestError("This relationship already exist");
+      }
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION &&
+        e.constraint === "fk_relation_relations_student"
+      ) {
+        throw new NotFoundError("This student was not found");
+      }
+
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION &&
+        e.constraint === "fk_relation_relations_plany_ks"
+      ) {
+        throw new BadRequestError("This plany were not found");
+      }
+      throw e;
+    }
+
+    res.status(StatusCodes.CREATED).json({ id_student, id_plany_ksztalcenia });
   };
 }
