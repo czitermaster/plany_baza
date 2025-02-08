@@ -342,7 +342,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/RemoveResponse"
         '400':
-          description: Plany nie istnieją
+          description: Plany nie istnieją lub istnieje juz relacja
           content:
             application/json:
               schema:
@@ -777,7 +777,7 @@ paths:
                     type: integer
                     example: 2
         '400':
-          description: Kierunek nie istnieje
+          description: Kierunek nie istnieje lub istnieje juz relacja
           content:
             application/json:
               schema:
