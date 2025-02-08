@@ -18,8 +18,18 @@ export function createStudent(dbClient) {
     const { imie, nazwisko, pesel, telefon, rok_studiow, id_kierunek } =
       req.body;
     const values = [imie, nazwisko, pesel, telefon, rok_studiow, id_kierunek];
-    const student = await dbClient.query(query, values);
-    res.status(StatusCodes.CREATED).json(student.rows[0]);
+    try {
+      const student = await dbClient.query(query, values);
+      res.status(StatusCodes.CREATED).json(student.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Kierunek nie istnieje");
+      }
+      throw e;
+    }
   };
 }
 
@@ -57,11 +67,22 @@ export function updateStudent(dbClient) {
       id_kierunek,
       id,
     ];
-    const result = await dbClient.query(query, values);
-    if (result.rowCount === 0) {
-      throw new NotFoundError();
+
+    try {
+      const result = await dbClient.query(query, values);
+      if (result.rowCount === 0) {
+        throw new NotFoundError();
+      }
+      res.json(result.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Ten kierunek nie istnieje");
+      }
+      throw e;
     }
-    res.json(result.rows[0]);
   };
 }
 
@@ -74,6 +95,9 @@ export function joinStudentToPlany(dbClient) {
     const values = [id_student, id_plany_ksztalcenia];
     try {
       await dbClient.query(query, values);
+      res
+        .status(StatusCodes.CREATED)
+        .json({ id_student, id_plany_ksztalcenia });
     } catch (e) {
       if (
         e instanceof pg.DatabaseError &&
@@ -98,7 +122,5 @@ export function joinStudentToPlany(dbClient) {
       }
       throw e;
     }
-
-    res.status(StatusCodes.CREATED).json({ id_student, id_plany_ksztalcenia });
   };
 }

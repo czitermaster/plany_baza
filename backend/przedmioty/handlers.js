@@ -1,5 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { NotFoundError } from "../utils.js";
+import { PostgresError } from "pg-error-enum";
+import pg from "pg";
+import { BadRequestError, NotFoundError } from "../utils.js";
 
 export function getPrzedmioty(dbClient) {
   return async (req, res) => {
@@ -14,8 +16,18 @@ export function createPrzedmiot(dbClient) {
     VALUES ($1, $2, $3) RETURNING *`;
     const { nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia } = req.body;
     const values = [nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia];
-    const przedmioty = await dbClient.query(query, values);
-    res.status(StatusCodes.CREATED).json(przedmioty.rows[0]);
+    try {
+      const przedmioty = await dbClient.query(query, values);
+      res.status(StatusCodes.CREATED).json(przedmioty.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Ten plan nie istnieje");
+      }
+      throw e;
+    }
   };
 }
 
@@ -43,10 +55,20 @@ export function updatePrzedmioty(dbClient) {
       WHERE id_przedmioty = $4
       RETURNING *`;
     const values = [nazwa_przedmiotu, liczba_ects, id_plany_ksztalcenia, id];
-    const result = await dbClient.query(query, values);
-    if (result.rowCount === 0) {
-      throw new NotFoundError();
+    try {
+      const result = await dbClient.query(query, values);
+      if (result.rowCount === 0) {
+        throw new NotFoundError();
+      }
+      res.json(result.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Plan nie istnieje");
+      }
+      throw e;
     }
-    res.json(result.rows[0]);
   };
 }

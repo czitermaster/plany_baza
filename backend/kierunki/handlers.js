@@ -15,8 +15,18 @@ export function createKierunek(dbClient) {
         VALUES ($1, $2) RETURNING *`;
     const { nazwa_kierunku, poziom_studiow } = req.body;
     const values = [nazwa_kierunku, poziom_studiow];
-    const kierunek = await dbClient.query(query, values);
-    res.status(StatusCodes.CREATED).json(kierunek.rows[0]);
+    try {
+      const kierunek = await dbClient.query(query, values);
+      res.status(StatusCodes.CREATED).json(kierunek.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Ten student juz isntnieje");
+      }
+      throw e;
+    }
   };
 }
 

@@ -1,5 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { NotFoundError } from "../utils.js";
+import { NotFoundError, BadRequestError } from "../utils.js";
+import { PostgresError } from "pg-error-enum";
+import pg from "pg";
 
 export function getPlany(dbClient) {
   return async (req, res) => {
@@ -15,8 +17,18 @@ export function createPlan(dbClient) {
     VALUES ($1, $2, $3) RETURNING *`;
     const { semestr, rok_akademicki, id_kierunek } = req.body;
     const values = [semestr, rok_akademicki, id_kierunek];
-    const plany = await dbClient.query(query, values);
-    res.status(StatusCodes.CREATED).json(plany.rows[0]);
+    try {
+      const plany = await dbClient.query(query, values);
+      res.status(StatusCodes.CREATED).json(plany.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Kierunek nie istnieje");
+      }
+      throw e;
+    }
   };
 }
 
@@ -45,10 +57,20 @@ export function updatePlan(dbClient) {
       WHERE id_plany_ksztalcenia = $4
       RETURNING *`;
     const values = [semestr, rok_akademicki, id_kierunek, id];
-    const result = await dbClient.query(query, values);
-    if (result.rowCount === 0) {
-      throw new NotFoundError();
+    try {
+      const result = await dbClient.query(query, values);
+      if (result.rowCount === 0) {
+        throw new NotFoundError();
+      }
+      res.json(result.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Kierunek nie istnieje");
+      }
+      throw e;
     }
-    res.json(result.rows[0]);
   };
 }

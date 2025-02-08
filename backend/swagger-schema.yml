@@ -189,16 +189,42 @@ components:
           type: integer
           example: 404
 
+    BadRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad Request
+        code:
+          type: integer
+          example: 400
+
 info:
-  title: API Title
+  title: API Plany Kształcenia
   version: '1.0'
 
 servers:
   - url: http://localhost:3000
 
+
+tags:
+  - name: studenci
+    description: Panel studenta
+  - name: plany
+    description: Panel planów kształcenia
+  - name: przedmioty
+    description: Panel przedmiotów
+  - name: kierunki 
+    description: Panel kierunków
+  - name: wykladowcy
+    description: Panel wykładowców
+    
+
 paths:
   /studenci:
     get:
+      tags: 
+        - studenci
       summary: Pobierz listę studentów
       responses:
         '200':
@@ -210,6 +236,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Student'
     post:
+      tags: 
+        - studenci
       summary: Stwórz nowego studenta
       requestBody:
         required: true
@@ -224,9 +252,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Student'
+        '400':
+          description: Taki student juz istnieje
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
 
   /studenci/{id}:
     delete:
+      tags: 
+        - studenci
       summary: Usuń studenta
       parameters:
         - name: id
@@ -248,6 +284,8 @@ paths:
               schema:
                  $ref: "#/components/schemas/NotFoundResponse"
     put:
+      tags: 
+        - studenci
       summary: Zaktualizuj dane studenta
       parameters:
         - name: id
@@ -298,6 +336,8 @@ paths:
 
   /studenci/{id}/dolacz-do-planu:
     post:
+      tags: 
+        - studenci
       summary: Dodaj studenta do planu
       operationId: addStudentToPlans
       parameters:
@@ -356,6 +396,8 @@ paths:
 
   /plany:
     get:
+      tags: 
+        - plany
       summary: Pobierz listę planów kształcenia
       responses:
         '200':
@@ -367,6 +409,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Plan'
     post:
+      tags: 
+        - plany
       summary: Stwórz nowy plan kształcenia
       requestBody:
         required: true
@@ -384,6 +428,8 @@ paths:
 
   /plany/{id}:
       delete:
+        tags: 
+        - plany
         summary: Usuń plan
         parameters:
           - name: id
@@ -406,6 +452,8 @@ paths:
                   $ref: "#/components/schemas/NotFoundResponse"
 
       put:
+        tags: 
+        - plany
         summary: Zaktualizuj plany
         parameters:
           - name: id
@@ -446,6 +494,8 @@ paths:
 
   /przedmioty:
     get:
+      tags: 
+        - przedmioty
       summary: Pobierz listę przedmiotów
       responses:
         '200':
@@ -457,6 +507,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Przedmiot'
     post:
+      tags: 
+        - przedmioty
       summary: Stwórz nowy przedmiot
       requestBody:
         required: true
@@ -474,6 +526,8 @@ paths:
 
   /przedmioty/{id}:
         delete:
+          tags: 
+          - przedmioty
           summary: Usuń przedmiot
           parameters:
             - name: id
@@ -495,6 +549,8 @@ paths:
                   schema:
                     $ref: "#/components/schemas/NotFoundResponse"
         put:
+          tags: 
+          - przedmioty
           summary: Zaktualizuj dane przedmiotu
           parameters:
             - name: id
@@ -545,6 +601,8 @@ paths:
 
   /kierunki:
     get:
+      tags: 
+        - kierunki
       summary: Pobierz listę kierunków
       responses:
         '200':
@@ -556,6 +614,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Kierunek'
     post:
+      tags: 
+        - kierunki
       summary: Stwórz Kierunek
       requestBody:
         required: true
@@ -572,6 +632,8 @@ paths:
                 $ref: '#/components/schemas/Kierunek'
   /kierunki/{id}:
     delete:
+      tags: 
+        - kierunki
       summary: Usuń kierunek
       parameters:
         - name: id
@@ -593,6 +655,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/NotFoundResponse"
     put:
+      tags: 
+        - kierunki
       summary: Zaktualizuj dane kierunku
       parameters:
         - name: id
@@ -643,6 +707,8 @@ paths:
 
   /wykladowcy:
     get:
+      tags: 
+        - wykladowcy
       summary: Pobierz listę wykladowców
       responses:
         '200':
@@ -654,6 +720,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Wykladowca'
     post:
+      tags: 
+        - wykladowcy
       summary: Stwórz nowego wykladowce
       requestBody:
         required: true
@@ -671,6 +739,8 @@ paths:
 
   /wykladowcy/{id}:
     delete:
+      tags: 
+        - wykladowcy
       summary: Usuń wykładowce
       parameters:
         - name: id
@@ -693,6 +763,8 @@ paths:
                 $ref: "#/components/schemas/NotFoundResponse"
 
     put:
+      tags: 
+        - wykladowcy
       summary: Zaktualizuj dane wykładowcy
       parameters:
         - name: id
@@ -743,6 +815,8 @@ paths:
 
   /wykladowcy/{id}/dolacz-do-kierunku:
     post:
+      tags: 
+        - wykladowcy
       summary: Dodaj wykładowcę do kierunku
       operationId: addTeacherToCourse
       parameters:
@@ -771,7 +845,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RemoveResponse"
+                type: object
+                properties:
+                  id_wykladowca:
+                    type: integer
+                    example: 1
+                  id_kierunek:
+                    type: integer
+                    example: 2
         '400':
           description: Błędne dane wejściowe lub brak parametrów
           content:

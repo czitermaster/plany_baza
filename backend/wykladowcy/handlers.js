@@ -17,8 +17,18 @@ export function createWykladowca(dbClient) {
       VALUES ($1, $2, $3, $4) RETURNING *`;
     const { imie, nazwisko, telefon, email } = req.body;
     const values = [imie, nazwisko, telefon, email];
-    const wykladowcy = await dbClient.query(query, values);
-    res.status(StatusCodes.CREATED).json(wykladowcy.rows[0]);
+    try {
+      const wykladowcy = await dbClient.query(query, values);
+      res.status(StatusCodes.CREATED).json(wykladowcy.rows[0]);
+    } catch (e) {
+      if (
+        e instanceof pg.DatabaseError &&
+        e.code === PostgresError.FOREIGN_KEY_VIOLATION
+      ) {
+        throw new BadRequestError("Ten student juz isntnieje");
+      }
+      throw e;
+    }
   };
 }
 
@@ -37,6 +47,24 @@ export function deleteWykladowca(dbClient) {
   };
 }
 
+export function updateWykladowca(dbClient) {
+  return async (req, res) => {
+    const { id } = req.params;
+    const { imie, nazwisko, telefon, email } = req.body;
+    const query = `
+      UPDATE wykladowcy
+      SET imie = $1, nazwisko = $2, telefon = $3, email = $4
+      WHERE id_wykladowca = $5
+      RETURNING *`;
+    const values = [imie, nazwisko, telefon, email, id];
+    const result = await dbClient.query(query, values);
+    if (result.rowCount === 0) {
+      throw new NotFoundError();
+    }
+    res.json(result.rows[0]);
+  };
+}
+
 export function joinWykladowcaToKierunek(dbClient) {
   return async (req, res) => {
     const query = `
@@ -46,6 +74,7 @@ export function joinWykladowcaToKierunek(dbClient) {
     const values = [id_wykladowca, id_kierunek];
     try {
       await dbClient.query(query, values);
+      res.status(StatusCodes.CREATED).json({ id_wykladowca, id_kierunek });
     } catch (e) {
       if (
         e instanceof pg.DatabaseError &&
@@ -70,25 +99,5 @@ export function joinWykladowcaToKierunek(dbClient) {
       }
       throw e;
     }
-
-    res.status(StatusCodes.CREATED).json({ id_wykladowca, id_kierunek });
-  };
-}
-
-export function updateWykladowca(dbClient) {
-  return async (req, res) => {
-    const { id } = req.params;
-    const { imie, nazwisko, telefon, email } = req.body;
-    const query = `
-      UPDATE wykladowcy
-      SET imie = $1, nazwisko = $2, telefon = $3, email = $4
-      WHERE id_wykladowca = $5
-      RETURNING *`;
-    const values = [imie, nazwisko, telefon, email, id];
-    const result = await dbClient.query(query, values);
-    if (result.rowCount === 0) {
-      throw new NotFoundError();
-    }
-    res.json(result.rows[0]);
   };
 }
