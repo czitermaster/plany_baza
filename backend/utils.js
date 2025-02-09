@@ -1,4 +1,6 @@
 import { StatusCodes } from "http-status-codes";
+import * as OpenApiValidator from "express-openapi-validator";
+
 export function handler(func) {
   return async (req, res, next) => {
     try {
@@ -21,6 +23,10 @@ class ApplicationError extends Error {
       code: this.code,
     };
   }
+
+  jsonResponse(res) {
+    return res.status(this.code).json(this.respond());
+  }
 }
 
 export class NotFoundError extends ApplicationError {
@@ -39,11 +45,38 @@ export class BadRequestError extends ApplicationError {
   }
 }
 
+export class ValidationError extends ApplicationError {
+  code = StatusCodes.BAD_REQUEST;
+  issues = [];
+
+  constructor(validationError = []) {
+    super("Bad Request");
+    this.issues = validationError.errors.map((err) => ({
+      value: err.path,
+      issue: err.message,
+    }));
+  }
+
+  respond() {
+    return {
+      message: this.message,
+      issues: this.issues,
+    };
+  }
+}
+
 export function errorHanlder(err, req, res, next) {
   console.log(`[ERROR]: ${err.message}`);
   console.log(err.stack);
   if (err instanceof ApplicationError) {
-    return res.status(err.code).json(err.respond());
+    return err.jsonResponse(res);
+  }
+  if (err instanceof OpenApiValidator.error.BadRequest) {
+    const validationError = new ValidationError(err);
+    return validationError.jsonResponse(res);
+  }
+  if (err instanceof SyntaxError) {
+    return new BadRequestError("Incorrect JSON body").jsonResponse(res);
   }
   res
     .status(StatusCodes.INTERNAL_SERVER_ERROR)

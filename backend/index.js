@@ -8,6 +8,7 @@ import { przedmiotyRouter } from "./przedmioty/router.js";
 import { kierunkiRouter } from "./kierunki/router.js";
 import { errorHanlder } from "./utils.js";
 import { getSwaggerUI } from "./swagger.js";
+import * as OpenApiValidator from "express-openapi-validator";
 
 async function main() {
   const app = express();
@@ -23,6 +24,16 @@ async function main() {
   app.use(express.json());
 
   app.use("/swagger", swaggerUi.serve, swaggerUi.setup(getSwaggerUI()));
+
+  app.use(
+    OpenApiValidator.middleware({
+      validateFormats: true,
+      validateRequests: {
+        allErrors: true,
+      },
+      apiSpec: "./swagger-schema.yml",
+    }),
+  );
 
   app.use("/studenci", studenciRouter(client));
   app.use("/wykladowcy", wykladowcyRouter(client));

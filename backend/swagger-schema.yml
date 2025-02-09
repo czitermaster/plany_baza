@@ -1,58 +1,97 @@
 openapi: '3.0.0'
 components:
+  examples:
+    ValidationErrorExample:
+      value:
+        message: Bad Request
+        issues:
+          - value: "/body/imie"
+            issue: "must NOT have fewer than 1 characters"
+          - value: "/body/nazwisko"
+            issue: "must NOT have fewer than 1 characters"
+    BadRequestExample:
+      value:
+        message: Bad Request
+        code: 400
+
+    NotFoundExample:
+      value:
+        message: Not found
+        code: 404
+
   schemas:
+
+    Phone:
+      type: string
+      example: "666777888"
+      minLength: 9
+      maxLength: 9
+
+    Pesel:
+      type: string
+      example: "12345678901"
+      minLength: 11
+      maxLength: 11
+
+    ID:
+      type: integer
+      example: 69
+      minimum: 1
+
+    Email:
+      type: string
+      example: "jan.kowalski@gmail.com"
+      format: email
+
     CreateStudent:
       type: object
       properties:
         id_kierunek:
-          type: integer
-          example: 6
+          $ref: "#/components/schemas/ID"
         imie:
           type: string
           example: "Kajetan"
+          minLength: 1
+          maxLength: 30
         nazwisko:
           type: string
           example: "Kacprzyk"
+          minLength: 1
+          maxLength: 30
         pesel:
-          type: string
-          example: "21372137420"
+          $ref: "#/components/schemas/Pesel"
         telefon:
-          type: string
-          example: "123456789"
+          $ref: "#/components/schemas/Phone"
         rok_studiow:
           type: integer
           example: 5
+          minimum: 1
 
     Student:
       type: object
       properties:
         id_student:
-          type: integer
-          example: 3
+          $ref: "#/components/schemas/ID"
         id_kierunek:
-          type: integer
-          example: 6
+          $ref: "#/components/schemas/ID"
         imie:
           type: string
           example: "Kajetan"
+          minLength: 1
+          maxLength: 30
         nazwisko:
           type: string
           example: "Kacprzyk"
+          minLength: 1
+          maxLength: 30
         pesel:
-          type: string
-          example: "21372137420"
+          $ref: "#/components/schemas/Pesel"
         telefon:
-          type: string
-          example: "123456789"
+         $ref: "#/components/schemas/Phone"
         rok_studiow:
           type: integer
           example: 5
 
-
-    # StudentsResponse:
-    #   type: array
-    #   items:
-    #     $ref: '#/components/schemas/Student'
 
     CreateWykladowca:
       type: object
@@ -60,34 +99,37 @@ components:
         imie:
           type: string
           example: "Jan"
+          minLength: 1
+          maxLength: 30
         nazwisko:
           type: string
           example: "Kowalski"
+          minLength: 1
+          maxLength: 30
         telefon:
-          type: string
-          example: "987654321"
+          $ref: "#/components/schemas/Phone"
         email:
-          type: string
-          example: "jan.kowalski@example.com"
+          $ref: "#/components/schemas/Email"
 
     Wykladowca:
       type: object
       properties:
         id_wykladowca:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
         imie:
           type: string
           example: "Jan"
+          minLength: 1
+          maxLength: 30
         nazwisko:
           type: string
           example: "Kowalski"
+          minLength: 1
+          maxLength: 30
         telefon:
-          type: string
-          example: "987654321"
+          $ref: "#/components/schemas/Phone"
         email:
-          type: string
-          example: "jan.kowalski@example.com"
+          $ref: "#/components/schemas/Email"
         
 
     CreateKierunek:
@@ -99,19 +141,26 @@ components:
         poziom_studiow:
           type: string
           example: "Magisterskie"
+          enum:
+            - "Magisterskie"
+            - "Inżynierskie"
+            - "Doktoranckie"
 
     Kierunek:
       type: object
       properties:
         id_kierunek:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
         nazwa_kierunek:
           type: string
           example: "Informatyka"
         poziom_studiow:
           type: string
           example: "Magisterskie"
+          enum:
+            - "Magisterskie"
+            - "Inżynierskie"
+            - "Doktoranckie"
 
     CreatePlan:
       type: object
@@ -119,19 +168,18 @@ components:
         semestr:
           type: integer
           example: 1
+          maximum: 10
         rok_akademicki:
           type: string
           example: "2023/2024"
         id_kierunek:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
 
     Plan:
       type: object
       properties:
-        id_plany:
-          type: integer
-          example: 1
+        id_plany_ksztalcenia:
+          $ref: "#/components/schemas/ID"
         semestr:
           type: integer
           example: 1
@@ -139,8 +187,7 @@ components:
           type: string
           example: "2023/2024"
         id_kierunek:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
 
 
     CreatePrzedmiot:
@@ -152,32 +199,32 @@ components:
         liczba_ects:
           type: integer
           example: 6
+          minimum: 1
+          maximum: 12
         id_plany_ksztalcenia:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
 
     Przedmiot:
       type: object
       properties:
         id_przedmioty:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
         nazwa_przedmiotu:
           type: string
           example: "Matematyka"
         liczba_ects:
           type: integer
           example: 6
+          minimum: 1
+          maximum: 12
         id_plany_ksztalcenia:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
     
     RemoveResponse:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          $ref: "#/components/schemas/ID"
     
     NotFoundResponse:
       type: object
@@ -198,6 +245,25 @@ components:
         code:
           type: integer
           example: 400
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad Request
+        issues:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: "/body/imie"
+              issue:
+                type: string
+                example: must NOT have fewer than 9 characters
+
 
 info:
   title: API Plany Kształcenia
@@ -253,6 +319,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Student'
 
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
   /studenci/{id}:
     delete:
       tags: 
@@ -276,7 +355,10 @@ paths:
           content:
             application/json:
               schema:
-                 $ref: "#/components/schemas/NotFoundResponse"
+                $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
     put:
       tags: 
         - studenci
@@ -301,12 +383,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Student'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
         '404':
           description: Student nie został znaleziony
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
 
   /studenci/{id}/dolacz-do-planu:
     post:
@@ -342,17 +440,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/RemoveResponse"
         '400':
-          description: Plany nie istnieją lub istnieje juz relacja
+          description: Błędne dane
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BadRequestResponse"
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
         '404':
           description: Student nie istnieje
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
 
   /plany:
     get:
@@ -386,73 +494,95 @@ paths:
               schema:
                 $ref: '#/components/schemas/Plan'
         '400':
-          description: Kierunek nie istnieje
+          description: Błędne dane
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
 
   /plany/{id}:
-      delete:
-        tags: 
-        - plany
-        summary: Usuń plan
-        parameters:
-          - name: id
-            in: path
-            required: true
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: Plan został usunięty
-            content:
-              application/json:
-                schema:
-                 $ref: "#/components/schemas/RemoveResponse"
-          '404':
-            description: Plan nie został odnaleziony
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/NotFoundResponse"
-
-      put:
-        tags: 
-        - plany
-        summary: Zaktualizuj plany
-        parameters:
-          - name: id
-            in: path
-            required: true
-            schema:
-              type: integer
-            description: ID planów do aktualizacji
-        requestBody:
+    delete:
+      tags: 
+      - plany
+      summary: Usuń plan
+      parameters:
+        - name: id
+          in: path
           required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Plan został usunięty
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreatePlan'
-        responses:
-          '200':
-            description: Zaktualizowany plan kształcenia
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Plan'
-          '400':
-            description:  Kierunek nie istnieje
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/BadRequestResponse'
-          '404':
-            description: Plan nie istnieje
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/NotFoundResponse'
+                $ref: "#/components/schemas/RemoveResponse"
+        '404':
+          description: Plan nie został odnaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
+
+
+    put:
+      tags: 
+      - plany
+      summary: Zaktualizuj plany
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID planów do aktualizacji
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlan'
+      responses:
+        '200':
+          description: Zaktualizowany plan kształcenia
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
+                
+        '404':
+          description: Plan nie istnieje
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
 
 
   /przedmioty:
@@ -487,76 +617,105 @@ paths:
               schema:
                 $ref: '#/components/schemas/Przedmiot'
         '400':
-          description:  Plan nie istnieje
+          description: Błędne dane
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
 
   /przedmioty/{id}:
-        delete:
-          tags: 
-          - przedmioty
-          summary: Usuń przedmiot
-          parameters:
-            - name: id
-              in: path
-              required: true
+    delete:
+      tags: 
+      - przedmioty
+      summary: Usuń przedmiot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Przedmiot został usunięty
+          content:
+            application/json:
               schema:
-                type: integer
-          responses:
-            '200':
-              description: Przedmiot został usunięty
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/RemoveResponse'
-            '404':
-              description: Przedmiot nie zostały odnaleziony
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/NotFoundResponse"
-        put:
-          tags: 
-          - przedmioty
-          summary: Zaktualizuj dane przedmiotu
-          parameters:
-            - name: id
-              in: path
-              required: true
+                $ref: '#/components/schemas/RemoveResponse'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
               schema:
-                type: integer
-                description: ID przedmiotu, którego dane mają zostać zaktualizowane
-          requestBody:
-            required: true
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/CreatePrzedmiot'
-          responses:
-            '200':
-              description: Dane przedmiotu zostały zaktualizowane
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Przedmiot'
-            '400':
-              description: Plan nie istnieje
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      error:
-                        type: string
-                        example: "Nieprawidłowe dane wejściowe"
-            '404':
-              description: Przedmiot nie istnieje
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/NotFoundResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
+        '404':
+          description: Przedmiot nie zostały odnaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
+    put:
+      tags: 
+      - przedmioty
+      summary: Zaktualizuj dane przedmiotu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: ID przedmiotu, którego dane mają zostać zaktualizowane
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePrzedmiot'
+      responses:
+        '200':
+          description: Dane przedmiotu zostały zaktualizowane
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Przedmiot'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
+        '404':
+          description: Przedmiot nie istnieje
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
 
   /kierunki:
     get:
@@ -573,11 +732,18 @@ paths:
                 items:
                   $ref: '#/components/schemas/Kierunek'
         '400':
-          description: Taki kierunek juz istnieje
+          description: Błędne dane
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
     post:
       tags: 
         - kierunki
@@ -595,6 +761,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Kierunek'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
   /kierunki/{id}:
     delete:
       tags: 
@@ -619,6 +798,9 @@ paths:
              application/json:
               schema:
                 $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
     put:
       tags: 
         - kierunki
@@ -643,12 +825,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Kierunek'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
         '404':
           description: Kierunek nie został znaleziony
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
 
   /wykladowcy:
     get:
@@ -681,6 +879,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Wykladowca'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
 
   /wykladowcy/{id}:
     delete:
@@ -706,6 +917,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
 
     put:
       tags: 
@@ -730,12 +944,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Wykladowca'
+        '400':
+          description: Błędne dane
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
         '404':
           description: Wykładowca nie został znaleziony
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
+
   /wykladowcy/{id}/dolacz-do-kierunku:
     post:
       tags: 
@@ -759,6 +990,7 @@ paths:
                 id_kierunek:
                   type: integer
                   example: 6
+                  minimum: 1
                   description: ID kierunku do którego wykładowca ma zostać dodany
               required:
                 - id_kierunek
@@ -777,14 +1009,24 @@ paths:
                     type: integer
                     example: 2
         '400':
-          description: Kierunek nie istnieje lub istnieje juz relacja
+          description: Błędne dane
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BadRequestResponse"
+                oneOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                validation_error:
+                  $ref: "#/components/examples/ValidationErrorExample"
+                bad_request:
+                  $ref: "#/components/examples/BadRequestExample"
         '404':
           description: Wykładowca nie istnieje
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotFoundResponse"
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
