@@ -1,0 +1,54 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Header from "./components/Header/Header";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Footer from "./components/Footer/Footer";
+import Students from "./components/Students/Students";
+import Plans from "./components/Plans/Plans";
+import Subjects from "./components/Subjects/Subjects";
+import Courses from "./components/Courses/Courses";
+import Lecturers from "./components/Lecturers/Lecturers";
+import Dashboard from "./components/Dashboard/Dashboard";
+import "./styles/main.css";
+
+function App() {
+  return (
+    <Router>
+      <div className="app">
+        <Header />
+        <div className="main-content">
+          <Sidebar />
+          <div className="content">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route
+                path="/studenci"
+                element={<Students />}
+              />
+              <Route path="/plany" element={<Plans />} />
+              <Route
+                path="/przedmioty"
+                element={<Subjects />}
+              />
+              <Route
+                path="/kierunki"
+                element={<Courses />}
+              />
+              <Route
+                path="/wykladowcy"
+                element={<Lecturers />}
+              />
+            </Routes>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    </Router>
+  );
+}
+
+export default App;
