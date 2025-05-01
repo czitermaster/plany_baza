@@ -65,9 +65,10 @@ export class ValidationError extends ApplicationError {
   }
 }
 
-export function errorHanlder(err, req, res, next) {
+export function errorHandler(err, req, res, next) {
   console.log(`[ERROR]: ${err.message}`);
   console.log(err.stack);
+  console.log(typeof err);
   if (err instanceof ApplicationError) {
     return err.jsonResponse(res);
   }

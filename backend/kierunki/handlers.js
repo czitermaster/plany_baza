@@ -1,3 +1,5 @@
+import pg from "pg";
+import { PostgresError } from "pg-error-enum";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../utils.js";
 
