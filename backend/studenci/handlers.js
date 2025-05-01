@@ -10,6 +10,19 @@ export function getStudenci(dbClient) {
   };
 }
 
+export function getStudent(dbClient) {
+  return async (req, res) => {
+    const student = await dbClient.query(
+      "SELECT * FROM student WHERE id_student = $1",
+      [Number(req.params.id)],
+    );
+    if (student.rows.length === 0) {
+      throw new NotFoundError();
+    }
+    res.json(student.rows[0]);
+  };
+}
+
 export function createStudent(dbClient) {
   return async (req, res) => {
     const query = `

@@ -52,7 +52,7 @@ drop table WYKLADOWCY;
 create table KIERUNEK (
    ID_KIERUNEK          SERIAL               not null,
    NAZWA_KIERUNKU       VARCHAR(40)          null,
-   POZIOM_STUDIOW       VARCHAR(10)          null,
+   POZIOM_STUDIOW       VARCHAR(30)          null,
    constraint PK_KIERUNEK primary key (ID_KIERUNEK)
 );
 

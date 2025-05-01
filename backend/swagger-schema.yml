@@ -405,6 +405,35 @@ paths:
               examples:
                 not_found:
                   $ref: "#/components/examples/NotFoundExample"
+    get:
+      tags: 
+        - studenci
+      summary: Pobierz studenta
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Ktory student wariacie
+      responses:
+        '200':
+          description: Detale studenta
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Student"
+
+        '404':
+          description: Student nie został znaleziony
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+              examples:
+                not_found:
+                  $ref: "#/components/examples/NotFoundExample"
+
 
   /studenci/{id}/dolacz-do-planu:
     post:

@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import "./sidebar.css";
 
 const Sidebar = () => {
@@ -12,7 +12,7 @@ const Sidebar = () => {
             className="sidebar-link"
             exact="true"
           >
-            <i className="fas fa-home"></i> Dashboard
+            <i className="fas fa-home"></i> Panel glowny
           </NavLink>
         </li>
         <li>

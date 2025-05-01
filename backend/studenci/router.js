@@ -6,12 +6,15 @@ import {
   deleteStudent,
   updateStudent,
   joinStudentToPlany,
+  getStudent,
 } from "./handlers.js";
 
 export function studenciRouter(dbClient) {
   const router = new Router();
 
   router.get("/", handler(getStudenci(dbClient)));
+
+  router.get("/:id", handler(getStudent(dbClient)));
 
   router.post("/", handler(createStudent(dbClient)));
 
