@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useQuery,
   useMutation,
@@ -22,7 +22,9 @@ const CoursesListError = ({ error }) => {
 };
 
 const Courses = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const qc = useQueryClient();
+
   const {
     data: courses,
     isLoading,
@@ -50,9 +52,35 @@ const Courses = () => {
     return <CoursesListError error={error.message} />;
   }
 
+  // Filter courses based on search term
+  const filteredCourses = courses.filter((course) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      course.nazwa_kierunku
+        .toLowerCase()
+        .includes(searchLower) ||
+      course.poziom_studiow
+        .toLowerCase()
+        .includes(searchLower) ||
+      course.id_kierunek.toString().includes(searchTerm)
+    );
+  });
+
   return (
     <div className="courses-container">
-      <h2> Zarzadzanie kierunkami </h2>
+      <div className="courses-header">
+        <h2>Zarzadzanie kierunkami</h2>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Szukaj kierunków..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <i className="fas fa-search search-icon"></i>
+        </div>
+      </div>
 
       <div className="table-wrapper">
         <div className="scrollable-table">
@@ -66,7 +94,7 @@ const Courses = () => {
               </tr>
             </thead>
             <tbody>
-              {courses.map((course) => (
+              {filteredCourses.map((course) => (
                 <tr key={course.id_kierunek}>
                   <td data-label="ID">
                     {course.id_kierunek}

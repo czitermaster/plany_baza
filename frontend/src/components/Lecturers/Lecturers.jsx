@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useQuery,
   useMutation,
@@ -22,7 +22,9 @@ const LecturersListError = ({ error }) => {
 };
 
 const Lecturers = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const qc = useQueryClient();
+
   const {
     data: lecturers,
     isLoading,
@@ -52,9 +54,37 @@ const Lecturers = () => {
     return <LecturersListError error={error.message} />;
   }
 
+  // Filter lecturers based on search term
+  const filteredLecturers = lecturers.filter((lecturer) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      lecturer.imie.toLowerCase().includes(searchLower) ||
+      lecturer.nazwisko
+        .toLowerCase()
+        .includes(searchLower) ||
+      lecturer.email.toLowerCase().includes(searchLower) ||
+      lecturer.telefon
+        .toLowerCase()
+        .includes(searchLower) ||
+      lecturer.id_wykladowca.toString().includes(searchTerm)
+    );
+  });
+
   return (
     <div className="lecturers-container">
-      <h2> Zarzadzanie wykladowcami </h2>
+      <div className="lecturers-header">
+        <h2>Zarzadzanie wykladowcami</h2>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Szukaj wykladowców..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <i className="fas fa-search search-icon"></i>
+        </div>
+      </div>
 
       <div className="table-wrapper">
         <div className="scrollable-table">
@@ -70,7 +100,7 @@ const Lecturers = () => {
               </tr>
             </thead>
             <tbody>
-              {lecturers.map((lecturer) => (
+              {filteredLecturers.map((lecturer) => (
                 <tr key={lecturer.id_wykladowca}>
                   <td data-label="ID">
                     {lecturer.id_wykladowca}
@@ -82,7 +112,7 @@ const Lecturers = () => {
                   <td data-label="Telefon">
                     {lecturer.telefon}
                   </td>
-                  <td data-labale="Email">
+                  <td data-label="Email">
                     {lecturer.email}
                   </td>
                   <td

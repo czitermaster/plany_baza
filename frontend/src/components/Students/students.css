@@ -8,16 +8,102 @@
   height: calc(80vh - 4rem);
 }
 
+/* Header and search bar styles */
+.students-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-controls {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.search-select {
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.search-select:focus {
+  outline: none;
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
+}
+
+.search-input-container {
+  position: relative;
+  flex-grow: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7f8c8d;
+  pointer-events: none;
+}
+
+.clear-search {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.clear-search:hover {
+  color: #e74c3c;
+}
+
 /* Table wrapper for scrollable area */
 .table-wrapper {
   width: 100%;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 /* Scrollable table container */
@@ -30,6 +116,7 @@
 .students-table {
   width: 100%;
   border-collapse: collapse;
+  background-color: white;
 }
 
 /* Fixed header */
@@ -59,11 +146,11 @@
 
 /* Striped rows */
 .students-table tbody tr:nth-child(even) {
-  background-color: #e4e5e6;
+  background-color: #f8f9fa;
 }
 
 .students-table tbody tr:hover {
-  background-color: #f5f7fa;
+  background-color: #eceef0;
   transition: background-color 0.2s ease;
 }
 
@@ -71,22 +158,20 @@
   border-bottom: none;
 }
 
-/* Special columns */
-.students-table th.status-column {
-  width: 100px;
+.no-results td {
+  padding: 2rem;
   text-align: center;
+  color: #7f8c8d;
+  font-style: italic;
 }
 
+/* Special columns */
 .students-table th.actions-column {
   width: 250px;
   text-align: center;
 }
 
-/* Status and Actions cells */
-.students-table td.status-cell {
-  text-align: center;
-}
-
+/* Actions cells */
 .students-table td.actions-cell {
   text-align: right;
 }
@@ -146,8 +231,24 @@
   color: #7f8c8d;
 }
 
-/* Responsive table */
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .students-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .search-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .search-select {
+    width: 100%;
+    max-width: 100%;
+  }
+  
   .table-wrapper {
     display: block;
     overflow-x: auto;
@@ -188,9 +289,5 @@
   
   .action-buttons {
     justify-content: flex-end;
-  }
-  
-  .status-badge {
-    margin-left: auto;
   }
 }

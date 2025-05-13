@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useQuery,
   useMutation,
@@ -22,7 +22,11 @@ const PlansListError = ({ error }) => {
 };
 
 const Plans = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchCategory, setSearchCategory] =
+    useState("all");
   const qc = useQueryClient();
+
   const {
     data: plans,
     isLoading,
@@ -50,9 +54,87 @@ const Plans = () => {
     return <PlansListError error={error.message} />;
   }
 
+  // Filter plans based on search term and category
+  const filteredPlans = plans.filter((plan) => {
+    const searchLower = searchTerm.toLowerCase();
+
+    switch (searchCategory) {
+      case "semester":
+        return plan.semestr
+          .toLowerCase()
+          .includes(searchLower);
+      case "year":
+        return plan.rok_akademicki
+          .toLowerCase()
+          .includes(searchLower);
+      case "id":
+        return plan.id_plany_ksztalcenia
+          .toString()
+          .includes(searchTerm);
+      default: // "all"
+        return (
+          plan.semestr
+            .toLowerCase()
+            .includes(searchLower) ||
+          plan.rok_akademicki
+            .toLowerCase()
+            .includes(searchLower) ||
+          plan.id_plany_ksztalcenia
+            .toString()
+            .includes(searchTerm)
+        );
+    }
+  });
+
   return (
     <div className="plans-container">
-      <h2> Zarzadzanie planami </h2>
+      <div className="plans-header">
+        <h2>Zarzadzanie planami</h2>
+        <div className="search-container">
+          <div className="search-controls">
+            <select
+              value={searchCategory}
+              onChange={(e) =>
+                setSearchCategory(e.target.value)
+              }
+              className="search-select"
+            >
+              <option value="all">Wszystkie pola</option>
+              <option value="semester">Semestr</option>
+              <option value="year">Rok akademicki</option>
+              <option value="id">ID planu</option>
+            </select>
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder={
+                  searchCategory === "all"
+                    ? "Szukaj we wszystkich polach..."
+                    : searchCategory === "semester"
+                    ? "Szukaj po semestrze..."
+                    : searchCategory === "year"
+                    ? "Szukaj po roku akademickim..."
+                    : "Szukaj po ID planu..."
+                }
+                value={searchTerm}
+                onChange={(e) =>
+                  setSearchTerm(e.target.value)
+                }
+                className="search-input"
+              />
+              <i className="fas fa-search search-icon"></i>
+              {searchTerm && (
+                <button
+                  className="clear-search"
+                  onClick={() => setSearchTerm("")}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="table-wrapper">
         <div className="scrollable-table">
@@ -66,55 +148,65 @@ const Plans = () => {
               </tr>
             </thead>
             <tbody>
-              {plans.map((plan) => (
-                <tr key={plan.id_plany_ksztalcenia}>
-                  <td data-label="ID">
-                    {plan.id_plany_ksztalcenia}
-                  </td>
-                  <td data-label="Semestr">
-                    {plan.semestr}
-                  </td>
-                  <td data-label="Rok akademicki">
-                    {plan.rok_akademicki}
-                  </td>
-                  <td
-                    data-label="Actions"
-                    className="actions-cell"
-                  >
-                    <div className="action-buttons">
-                      <Link
-                        to={`/plany/${plan.id_plany_ksztalcenia}`}
-                      >
+              {filteredPlans.length > 0 ? (
+                filteredPlans.map((plan) => (
+                  <tr key={plan.id_plany_ksztalcenia}>
+                    <td data-label="ID">
+                      {plan.id_plany_ksztalcenia}
+                    </td>
+                    <td data-label="Semestr">
+                      {plan.semestr}
+                    </td>
+                    <td data-label="Rok akademicki">
+                      {plan.rok_akademicki}
+                    </td>
+                    <td
+                      data-label="Actions"
+                      className="actions-cell"
+                    >
+                      <div className="action-buttons">
+                        <Link
+                          to={`/plany/${plan.id_plany_ksztalcenia}`}
+                        >
+                          <Button
+                            disabled={isPending}
+                            variant="primary"
+                          >
+                            <i className="fas fa-eye"></i>{" "}
+                            View
+                          </Button>
+                        </Link>
                         <Button
                           disabled={isPending}
-                          variant="primary"
+                          variant="secondary"
                         >
-                          <i className="fas fa-eye"></i>{" "}
-                          View
+                          <i className="fas fa-edit"></i>{" "}
+                          Edit
                         </Button>
-                      </Link>
-                      <Button
-                        disabled={isPending}
-                        variant="secondary"
-                      >
-                        <i className="fas fa-edit"></i> Edit
-                      </Button>
-                      <Button
-                        disabled={isPending}
-                        variant="delete"
-                        onClick={() =>
-                          deletePlan(
-                            plan.id_plany_ksztalcenia
-                          )
-                        }
-                      >
-                        <i className="fas fa-trash"></i>{" "}
-                        Delete
-                      </Button>
-                    </div>
+                        <Button
+                          disabled={isPending}
+                          variant="delete"
+                          onClick={() =>
+                            deletePlan(
+                              plan.id_plany_ksztalcenia
+                            )
+                          }
+                        >
+                          <i className="fas fa-trash"></i>{" "}
+                          Delete
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className="no-results">
+                  <td colSpan="4">
+                    Brak wyników wyszukiwania dla "
+                    {searchTerm}"
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
