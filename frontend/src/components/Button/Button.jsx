@@ -4,6 +4,7 @@ import "./button.css";
 const Button = ({
   disabled = false,
   variant = "primary",
+  type = "button",
   children,
   onClick,
 }) => {
@@ -24,6 +25,7 @@ const Button = ({
       className={className}
       disabled={disabled}
       onClick={onClick}
+      type={type}
     >
       {children}
     </button>

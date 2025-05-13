@@ -23,6 +23,7 @@ import PlanDetails from "./components/PlanDetails/PlanDetails";
 import SubjectDetails from "./components/SubjectDetails/SubjectDetails";
 import CourseDetails from "./components/CourseDetails/CourseDetails";
 import LecturerDetails from "./components/LecturerDetails/LecturerDetails";
+import { StudentAdd } from "./components/StudentAdd/StudentAdd";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,10 @@ function App() {
                 <Route
                   path="/wykladowcy/:id"
                   element={<LecturerDetails />}
+                />
+                <Route
+                  path="/studenci/add"
+                  element={<StudentAdd />}
                 />
               </Routes>
             </div>

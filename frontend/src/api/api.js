@@ -15,7 +15,7 @@ API.interceptors.request.use((config) => {
 
 const apiService = {
   getStudents: () => API.get("/studenci"),
-  createStudent: () => API.post("/studeci"),
+  createStudent: (user) => API.post("/studenci", user),
   updateStudent: (id) => API.put(`/studenci/${id}`),
   deleteStudent: (id) => API.delete(`/studenci/${id}`),
 
