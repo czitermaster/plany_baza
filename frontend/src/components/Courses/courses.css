@@ -1,0 +1,168 @@
+/* Main container */
+.courses-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Table styling */
+.courses-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Table header */
+.courses-table thead {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.courses-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+/* Special columns */
+.courses-table th.status-column {
+  width: 100px;
+  text-align: center;
+}
+
+.courses-table th.actions-column {
+  width: 250px;
+  text-align: center;
+}
+
+/* Table body */
+.courses-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
+}
+
+.courses-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status and Actions cells */
+.courses-table td.status-cell {
+  text-align: center;
+}
+
+.courses-table td.actions-cell {
+  text-align: right;
+}
+
+/* Hover effect */
+.courses-table tbody tr:hover {
+  background-color: #f5f7fa;
+  transition: background-color 0.2s ease;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+
+/* Status indicators */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 70px;
+  text-align: center;
+}
+
+.status-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #2c3e50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .courses-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .courses-table thead {
+    display: none;
+  }
+  
+  .courses-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .courses-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: right !important;
+  }
+  
+  .courses-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 1rem;
+    color: #2c3e50;
+  }
+  
+  .action-buttons {
+    justify-content: flex-end;
+  }
+  
+  .status-badge {
+    margin-left: auto;
+  }
+}

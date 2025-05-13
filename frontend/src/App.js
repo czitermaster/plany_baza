@@ -19,6 +19,10 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import StudentDetails from "./components/StudentDetails/StudentDetails";
+import PlanDetails from "./components/PlanDetails/PlanDetails";
+import SubjectDetails from "./components/SubjectDetails/SubjectDetails";
+import CourseDetails from "./components/CourseDetails/CourseDetails";
+import LecturerDetails from "./components/LecturerDetails/LecturerDetails";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +57,22 @@ function App() {
                 <Route
                   path="/studenci/:id"
                   element={<StudentDetails />}
+                />
+                <Route
+                  path="/plany/:id"
+                  element={<PlanDetails />}
+                />
+                <Route
+                  path="/przedmioty/:id"
+                  element={<SubjectDetails />}
+                />
+                <Route
+                  path="/kierunki/:id"
+                  element={<CourseDetails />}
+                />
+                <Route
+                  path="/wykladowcy/:id"
+                  element={<LecturerDetails />}
                 />
               </Routes>
             </div>

@@ -1,29 +1,3 @@
-// import axios from "axios";
-
-// const API_BASE_URL = "http://localhost:3000/api";
-
-// const api = {
-//   // Studenci
-//   getStudents: () => axios.get(`${API_BASE_URL}/students`),
-//   createStudent: (studentData) =>
-//     axios.post(`${API_BASE_URL}/students`, studentData),
-
-//   // Plany
-//   getPlans: () => axios.get(`${API_BASE_URL}/plans`),
-
-//   // Przedmioty
-//   getSubjects: () => axios.get(`${API_BASE_URL}/subjects`),
-
-//   // Kierunki
-//   getCourses: () => axios.get(`${API_BASE_URL}/courses`),
-
-//   // Wykładowcy
-//   getLecturers: () =>
-//     axios.get(`${API_BASE_URL}/lecturers`),
-// };
-
-// export default api;
-
 import axios from "axios";
 
 const API = axios.create({
@@ -44,6 +18,26 @@ const apiService = {
   createStudent: () => API.post("/studeci"),
   updateStudent: (id) => API.put(`/studenci/${id}`),
   deleteStudent: (id) => API.delete(`/studenci/${id}`),
+
+  getPlans: () => API.get("/plany"),
+  createPlan: () => API.post("/plany"),
+  updatePlan: (id) => API.put(`/plany/${id}`),
+  deletePlan: (id) => API.delete(`/plany/${id}`),
+
+  getSubjects: () => API.get("/przedmioty"),
+  createSubject: () => API.post("/przedmioty"),
+  updateSubject: (id) => API.put(`/przedmioty/${id}`),
+  deleteSubject: (id) => API.delete(`/przedmioty/${id}`),
+
+  getCourses: () => API.get("/kierunki"),
+  createCourse: () => API.post("/kierunki"),
+  updateCourse: (id) => API.put(`/kierunki/${id}`),
+  deleteCourse: (id) => API.delete(`/kierunki/${id}`),
+
+  getLecturers: () => API.get("/wykladowcy"),
+  createLecturer: () => API.post("/wykladowcy"),
+  updateLecturer: (id) => API.put(`/wykladowcy/${id}`),
+  deleteLecturer: (id) => API.delete(`/wykladowcy/${id}`),
 };
 
 export default apiService;
