@@ -3,22 +3,42 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: calc(80vh - 4rem);
+}
+
+/* Table wrapper for scrollable area */
+.table-wrapper {
+  width: 100%;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollable table container */
+.scrollable-table {
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 /* Table styling */
 .lecturers-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1.5rem;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
 }
 
-/* Table header */
+/* Fixed header */
 .lecturers-table thead {
+  position: sticky;
+  top: 0;
   background-color: #2c3e50;
   color: white;
+  z-index: 10;
 }
 
 .lecturers-table th {
@@ -28,6 +48,27 @@
   text-transform: uppercase;
   font-size: 0.85rem;
   letter-spacing: 0.5px;
+}
+
+/* Table body */
+.lecturers-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
+}
+
+/* Striped rows with your custom color */
+.lecturers-table tbody tr:nth-child(even) {
+  background-color: #e4e5e6;
+}
+
+.lecturers-table tbody tr:hover {
+  background-color: #eceef0;
+  transition: background-color 0.2s ease;
+}
+
+.lecturers-table tr:last-child td {
+  border-bottom: none;
 }
 
 /* Special columns */
@@ -41,17 +82,6 @@
   text-align: center;
 }
 
-/* Table body */
-.lecturers-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  vertical-align: middle;
-}
-
-.lecturers-table tr:last-child td {
-  border-bottom: none;
-}
-
 /* Status and Actions cells */
 .lecturers-table td.status-cell {
   text-align: center;
@@ -61,19 +91,12 @@
   text-align: right;
 }
 
-/* Hover effect */
-.lecturers-table tbody tr:hover {
-  background-color: #f5f7fa;
-  transition: background-color 0.2s ease;
-}
-
 /* Action buttons */
 .action-buttons {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
 }
-
 
 /* Status indicators */
 .status-badge {
@@ -125,10 +148,15 @@
 
 /* Responsive table */
 @media (max-width: 768px) {
-  .lecturers-table {
+  .table-wrapper {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+  }
+  
+  .lecturers-table {
+    display: block;
+    width: 100%;
   }
   
   .lecturers-table thead {

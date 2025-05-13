@@ -54,61 +54,69 @@ const Courses = () => {
     <div className="courses-container">
       <h2> Zarzadzanie kierunkami </h2>
 
-      <table className="courses-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nazwa kierunku</th>
-            <th>Poziom studiow</th>
-            <th className="actions-column">Akcje</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.map((course) => (
-            <tr key={course.id_kierunek}>
-              <td data-label="ID">{course.id_kierunek}</td>
-              <td data-label="Nazwa kierunku">
-                {course.nazwa_kierunku}
-              </td>
-              <td data-label="Poziom studiow">
-                {course.poziom_studiow}
-              </td>
-              <td
-                data-label="Actions"
-                className="actions-cell"
-              >
-                <div className="action-buttons">
-                  <Link
-                    to={`/kierunki/${course.id_kierunek}`}
+      <div className="table-wrapper">
+        <div className="scrollable-table">
+          <table className="courses-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nazwa kierunku</th>
+                <th>Poziom studiow</th>
+                <th className="actions-column">Akcje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.map((course) => (
+                <tr key={course.id_kierunek}>
+                  <td data-label="ID">
+                    {course.id_kierunek}
+                  </td>
+                  <td data-label="Nazwa kierunku">
+                    {course.nazwa_kierunku}
+                  </td>
+                  <td data-label="Poziom studiow">
+                    {course.poziom_studiow}
+                  </td>
+                  <td
+                    data-label="Actions"
+                    className="actions-cell"
                   >
-                    <Button
-                      disabled={isPending}
-                      variant="primary"
-                    >
-                      <i className="fas fa-eye"></i> View
-                    </Button>
-                  </Link>
-                  <Button
-                    disabled={isPending}
-                    variant="secondary"
-                  >
-                    <i className="fas fa-edit"></i> Edit
-                  </Button>
-                  <Button
-                    disabled={isPending}
-                    variant="delete"
-                    onClick={() =>
-                      deleteCourse(course.id_kierunek)
-                    }
-                  >
-                    <i className="fas fa-trash"></i> Delete
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    <div className="action-buttons">
+                      <Link
+                        to={`/kierunki/${course.id_kierunek}`}
+                      >
+                        <Button
+                          disabled={isPending}
+                          variant="primary"
+                        >
+                          <i className="fas fa-eye"></i>{" "}
+                          View
+                        </Button>
+                      </Link>
+                      <Button
+                        disabled={isPending}
+                        variant="secondary"
+                      >
+                        <i className="fas fa-edit"></i> Edit
+                      </Button>
+                      <Button
+                        disabled={isPending}
+                        variant="delete"
+                        onClick={() =>
+                          deleteCourse(course.id_kierunek)
+                        }
+                      >
+                        <i className="fas fa-trash"></i>{" "}
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

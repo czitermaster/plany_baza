@@ -56,67 +56,77 @@ const Lecturers = () => {
     <div className="lecturers-container">
       <h2> Zarzadzanie wykladowcami </h2>
 
-      <table className="lecturers-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Imie</th>
-            <th>Nazwisko</th>
-            <th>Telefon</th>
-            <th>Email</th>
-            <th className="actions-column">Akcje</th>
-          </tr>
-        </thead>
-        <tbody>
-          {lecturers.map((lecturer) => (
-            <tr key={lecturer.id_wykladowca}>
-              <td data-label="ID">
-                {lecturer.id_wykladowca}
-              </td>
-              <td data-label="Imie">{lecturer.imie}</td>
-              <td data-label="Nazwisko">
-                {lecturer.nazwisko}
-              </td>
-              <td data-label="Telefon">
-                {lecturer.telefon}
-              </td>
-              <td data-labale="Email">{lecturer.email}</td>
-              <td
-                data-label="Actions"
-                className="actions-cell"
-              >
-                <div className="action-buttons">
-                  <Link
-                    to={`/wykladowcy/${lecturer.id_wykladowca}`}
+      <div className="table-wrapper">
+        <div className="scrollable-table">
+          <table className="lecturers-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Imie</th>
+                <th>Nazwisko</th>
+                <th>Telefon</th>
+                <th>Email</th>
+                <th className="actions-column">Akcje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lecturers.map((lecturer) => (
+                <tr key={lecturer.id_wykladowca}>
+                  <td data-label="ID">
+                    {lecturer.id_wykladowca}
+                  </td>
+                  <td data-label="Imie">{lecturer.imie}</td>
+                  <td data-label="Nazwisko">
+                    {lecturer.nazwisko}
+                  </td>
+                  <td data-label="Telefon">
+                    {lecturer.telefon}
+                  </td>
+                  <td data-labale="Email">
+                    {lecturer.email}
+                  </td>
+                  <td
+                    data-label="Actions"
+                    className="actions-cell"
                   >
-                    <Button
-                      disabled={isPending}
-                      variant="primary"
-                    >
-                      <i className="fas fa-eye"></i> View
-                    </Button>
-                  </Link>
-                  <Button
-                    disabled={isPending}
-                    variant="secondary"
-                  >
-                    <i className="fas fa-edit"></i> Edit
-                  </Button>
-                  <Button
-                    disabled={isPending}
-                    variant="delete"
-                    onClick={() =>
-                      deleteLecturer(lecturer.id_wykladowca)
-                    }
-                  >
-                    <i className="fas fa-trash"></i> Delete
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    <div className="action-buttons">
+                      <Link
+                        to={`/wykladowcy/${lecturer.id_wykladowca}`}
+                      >
+                        <Button
+                          disabled={isPending}
+                          variant="primary"
+                        >
+                          <i className="fas fa-eye"></i>{" "}
+                          View
+                        </Button>
+                      </Link>
+                      <Button
+                        disabled={isPending}
+                        variant="secondary"
+                      >
+                        <i className="fas fa-edit"></i> Edit
+                      </Button>
+                      <Button
+                        disabled={isPending}
+                        variant="delete"
+                        onClick={() =>
+                          deleteLecturer(
+                            lecturer.id_wykladowca
+                          )
+                        }
+                      >
+                        <i className="fas fa-trash"></i>{" "}
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

@@ -54,63 +54,71 @@ const Subjects = () => {
     <div className="subjects-container">
       <h2> Zarzadzanie przedmiotami </h2>
 
-      <table className="subjects-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nazwa przedmiotu</th>
-            <th>Liczba ECTS</th>
-            <th className="actions-column">Akcje</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subjects.map((subject) => (
-            <tr key={subject.id_przedmioty}>
-              <td data-label="ID">
-                {subject.id_przedmioty}
-              </td>
-              <td data-label="Nazwa przedmiotu">
-                {subject.nazwa_przedmiotu}
-              </td>
-              <td data-label="Liczba ECTS">
-                {subject.liczba_ects}
-              </td>
-              <td
-                data-label="Actions"
-                className="actions-cell"
-              >
-                <div className="action-buttons">
-                  <Link
-                    to={`/przedmioty/${subject.id_przedmioty}`}
+      <div className="table-wrapper">
+        <div className="scrollable-table">
+          <table className="subjects-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nazwa przedmiotu</th>
+                <th>Liczba ECTS</th>
+                <th className="actions-column">Akcje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subjects.map((subject) => (
+                <tr key={subject.id_przedmioty}>
+                  <td data-label="ID">
+                    {subject.id_przedmioty}
+                  </td>
+                  <td data-label="Nazwa przedmiotu">
+                    {subject.nazwa_przedmiotu}
+                  </td>
+                  <td data-label="Liczba ECTS">
+                    {subject.liczba_ects}
+                  </td>
+                  <td
+                    data-label="Actions"
+                    className="actions-cell"
                   >
-                    <Button
-                      disabled={isPending}
-                      variant="primary"
-                    >
-                      <i className="fas fa-eye"></i> View
-                    </Button>
-                  </Link>
-                  <Button
-                    disabled={isPending}
-                    variant="secondary"
-                  >
-                    <i className="fas fa-edit"></i> Edit
-                  </Button>
-                  <Button
-                    disabled={isPending}
-                    variant="delete"
-                    onClick={() =>
-                      deleteSubject(subject.id_przedmioty)
-                    }
-                  >
-                    <i className="fas fa-trash"></i> Delete
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    <div className="action-buttons">
+                      <Link
+                        to={`/przedmioty/${subject.id_przedmioty}`}
+                      >
+                        <Button
+                          disabled={isPending}
+                          variant="primary"
+                        >
+                          <i className="fas fa-eye"></i>{" "}
+                          View
+                        </Button>
+                      </Link>
+                      <Button
+                        disabled={isPending}
+                        variant="secondary"
+                      >
+                        <i className="fas fa-edit"></i> Edit
+                      </Button>
+                      <Button
+                        disabled={isPending}
+                        variant="delete"
+                        onClick={() =>
+                          deleteSubject(
+                            subject.id_przedmioty
+                          )
+                        }
+                      >
+                        <i className="fas fa-trash"></i>{" "}
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
